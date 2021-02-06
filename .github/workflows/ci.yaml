@@ -21,8 +21,6 @@ jobs:
           node-version: 14.2.0
       - name: install python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
           pip install -r dev-requirements.txt
           pip install .
       - name: install semantic-release
@@ -54,9 +52,7 @@ jobs:
         with:
           python-version: 3.7
       - name: install python dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install .
+        run: pip install .
       - name: deploy to staging
         run: |
           queenbee
@@ -76,9 +72,7 @@ jobs:
         with:
           python-version: 3.7
       - name: install python dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pollination-daylight-factor
+        run: pip install pollination-daylight-factor
       - name: deploy to production
         run: |
           queenbee
