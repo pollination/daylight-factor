@@ -60,7 +60,7 @@ jobs:
       - name: deploy to staging
         run: |
           queenbee
-          pollination dsl push pollination-daylight-factor --tag ${{needs.deploy.outputs.tag}} -e https://api.staging.pollination.cloud
+          pollination dsl push pollination-daylight-factor --tag ${{needs.deploy.outputs.tag}} -e https://api.staging.pollination.cloud -src https://api.staging.pollination.cloud/registries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           QB_POLLINATION_TOKEN: ${{ secrets.POLLINATION_STAGING_LADYBUGBOT_TOKEN }}
@@ -82,7 +82,7 @@ jobs:
       - name: deploy to production
         run: |
           queenbee
-          pollination dsl push pollination-daylight-factor -e https://api.pollination.cloud
+          pollination dsl push pollination-daylight-factor -e https://api.pollination.cloud -src https://api.pollination.cloud/registries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           QB_POLLINATION_TOKEN: ${{ secrets.POLLINATION_LADYBUGBOT_TOKEN }}
