@@ -25,7 +25,7 @@ class DaylightFactorEntryPoint(DAG):
 
     radiance_parameters = Inputs.str(
         description='The radiance parameters for ray tracing',
-        default='-ab 2'
+        default='-ab 2 -aa 0.1 -ad 2048 -ar 64'
     )
 
     model = Inputs.file(
