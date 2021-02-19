@@ -20,7 +20,7 @@ class DaylightFactorRayTracing(DAG):
 
     radiance_parameters = Inputs.str(
         description='The radiance parameters for ray tracing',
-        default='-ab 2'
+        default='-ab 2 -aa 0.1 -ad 2048 -ar 64'
     )
 
     octree_file = Inputs.file(
@@ -57,7 +57,10 @@ class DaylightFactorRayTracing(DAG):
         grid=split_grid._outputs.output_folder, scene_file=octree_file
     ):
         return [
-            {'from': RayTracingDaylightFactor()._outputs.result, 'to': '{{item.name}}.res'}
+            {
+                'from': RayTracingDaylightFactor()._outputs.result,
+                'to': '{{item.name}}.res'
+            }
         ]
 
     @task(
