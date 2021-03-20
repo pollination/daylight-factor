@@ -6,7 +6,9 @@ from pollination.honeybee_radiance.translate import CreateRadianceFolder
 
 # input/output alias
 from pollination.alias.inputs.model import hbjson_model_input
-from pollination.alias.outputs.daylight import parse_daylight_factor_results
+from pollination.alias.inputs.radiancepar import rad_par_daylight_factor_input
+from pollination.alias.inputs.grid import sensor_count_input, grid_filter_input
+from pollination.alias.outputs.daylight import daylight_factor_results
 
 from ._raytracing import DaylightFactorRayTracing
 
@@ -19,17 +21,23 @@ class DaylightFactorEntryPoint(DAG):
     sensor_count = Inputs.int(
         default=200,
         description='The maximum number of grid points per parallel execution',
-        spec={'type': 'integer', 'minimum': 1}
+        spec={'type': 'integer', 'minimum': 1},
+        alias=sensor_count_input
     )
 
     radiance_parameters = Inputs.str(
         description='The radiance parameters for ray tracing',
-        default='-ab 2 -aa 0.1 -ad 2048 -ar 64'
+        default='-ab 2 -aa 0.1 -ad 2048 -ar 64',
+        alias=rad_par_daylight_factor_input
     )
 
-    sensor_grid = Inputs.str(
-        description='A grid name or a pattern to filter the sensor grids. By default '
-        'all the grids in HBJSON model will be exported.', default='*'
+    grid_filter = Inputs.str(
+        description='Text for a grid identifer or a pattern to filter the sensor grids '
+        'of the model that are simulated. For instance, first_floor_* will simulate '
+        'only the sensor grids that have an identifier that starts with '
+        'first_floor_. By default, all grids in the model will be simulated.',
+        default='*',
+        alias=grid_filter_input
     )
 
     model = Inputs.file(
@@ -48,7 +56,7 @@ class DaylightFactorEntryPoint(DAG):
         ]
 
     @task(template=CreateRadianceFolder)
-    def create_rad_folder(self, input_model=model, sensor_grid=sensor_grid):
+    def create_rad_folder(self, input_model=model, sensor_grid=grid_filter):
         """Translate the input model to a radiance folder."""
         return [
             {'from': CreateRadianceFolder()._outputs.model_folder, 'to': 'model'},
@@ -96,4 +104,7 @@ class DaylightFactorEntryPoint(DAG):
         # instead we access the results folder directly as an output
         pass
 
-    results = Outputs.folder(source='results', alias=parse_daylight_factor_results)
+    results = Outputs.folder(
+        source='results', description='Folder with raw result files (.res) that contain '
+        'daylight factor values for each sensor.', alias=daylight_factor_results
+    )
