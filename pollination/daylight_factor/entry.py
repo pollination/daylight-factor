@@ -57,14 +57,13 @@ class DaylightFactorEntryPoint(DAG):
 
     @task(template=CreateRadianceFolderGrid)
     def create_rad_folder(
-            self, input_model=model,
-            grid_filter=grid_filter
-        ):
+        self, input_model=model, grid_filter=grid_filter
+            ):
         """Translate the input model to a radiance folder."""
         return [
             {'from': CreateRadianceFolderGrid()._outputs.model_folder, 'to': 'model'},
             {
-                'from': CreateRadianceFolderGrid()._outputs.sensor_grids_file,
+                'from': CreateRadianceFolderGrid()._outputs.model_sensor_grids_file,
                 'to': 'results/grids_info.json'
             },
             {
