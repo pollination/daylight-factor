@@ -61,7 +61,14 @@ class DaylightFactorEntryPoint(DAG):
             ):
         """Translate the input model to a radiance folder."""
         return [
-            {'from': CreateRadianceFolderGrid()._outputs.model_folder, 'to': 'model'},
+            {
+                'from': CreateRadianceFolderGrid()._outputs.model_folder,
+                'to': 'model'
+            },
+            {
+                'from': CreateRadianceFolderGrid()._outputs.bsdf_folder,
+                'to': 'model/bsdf'
+            },
             {
                 'from': CreateRadianceFolderGrid()._outputs.model_sensor_grids_file,
                 'to': 'results/grids_info.json'
@@ -92,7 +99,7 @@ class DaylightFactorEntryPoint(DAG):
         needs=[create_rad_folder, create_octree],
         loop=create_rad_folder._outputs.sensor_grids,
         sub_folder='initial_results/{{item.name}}',  # create a subfolder for each grid
-        sub_paths={'sensor_grid': 'grid/{{item.full_id}}.pts'}  # sub_path for sensor_grid arg
+        sub_paths={'sensor_grid': 'grid/{{item.full_id}}.pts'}  # sensor_grid sub_path
     )
     def daylight_factor_ray_tracing(
         self,
@@ -100,7 +107,8 @@ class DaylightFactorEntryPoint(DAG):
         radiance_parameters=radiance_parameters,
         octree_file=create_octree._outputs.scene_file,
         grid_name='{{item.full_id}}',
-        sensor_grid=create_rad_folder._outputs.model_folder
+        sensor_grid=create_rad_folder._outputs.model_folder,
+        bsdfs=create_rad_folder._outputs.bsdf_folder
     ):
         # this task doesn't return a file for each loop.
         # instead we access the results folder directly as an output

@@ -38,6 +38,10 @@ class DaylightFactorRayTracing(DAG):
         extensions=['pts']
     )
 
+    bsdfs = Inputs.folder(
+        description='Folder containing any BSDF files needed for ray tracing.'
+    )
+
     @task(template=SplitGrid)
     def split_grid(self, sensor_count=sensor_count, input_grid=sensor_grid):
         return [
@@ -54,7 +58,9 @@ class DaylightFactorRayTracing(DAG):
     )
     def ray_tracing(
         self, radiance_parameters=radiance_parameters,
-        grid=split_grid._outputs.output_folder, scene_file=octree_file
+        grid=split_grid._outputs.output_folder,
+        scene_file=octree_file,
+        bsdf_folder=bsdfs
     ):
         return [
             {
