@@ -5,7 +5,7 @@ from pollination.honeybee_radiance.octree import CreateOctreeWithSky
 from pollination.honeybee_radiance.translate import CreateRadianceFolderGrid
 
 # input/output alias
-from pollination.alias.inputs.model import hbjson_model_input
+from pollination.alias.inputs.model import hbjson_model_grid_input
 from pollination.alias.inputs.radiancepar import rad_par_daylight_factor_input
 from pollination.alias.inputs.grid import sensor_count_input, grid_filter_input
 from pollination.alias.outputs.daylight import daylight_factor_results
@@ -43,7 +43,7 @@ class DaylightFactorEntryPoint(DAG):
     model = Inputs.file(
         description='A Honeybee model in HBJSON file format.',
         extensions=['json', 'hbjson'],
-        alias=hbjson_model_input
+        alias=hbjson_model_grid_input
     )
 
     @task(template=GenSkyWithCertainIllum)
