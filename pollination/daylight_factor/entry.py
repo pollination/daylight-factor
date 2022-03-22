@@ -84,7 +84,7 @@ class DaylightFactorEntryPoint(DAG):
             },
             {
                 'from': CreateRadianceFolderGrid()._outputs.model_sensor_grids_file,
-                'to': 'results/grids_info.json'
+                'to': 'results/daylight-factor/grids_info.json'
             },
             {
                 'from': CreateRadianceFolderGrid()._outputs.sensor_grids,
