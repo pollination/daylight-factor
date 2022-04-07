@@ -84,7 +84,7 @@ class DaylightFactorEntryPoint(DAG):
             },
             {
                 'from': CreateRadianceFolderGrid()._outputs.model_sensor_grids_file,
-                'to': 'results/daylight-factor/grids_info.json'
+                'to': 'results/grids_info.json'
             },
             {
                 'from': CreateRadianceFolderGrid()._outputs.sensor_grids,
@@ -135,7 +135,7 @@ class DaylightFactorEntryPoint(DAG):
         template=RayTracingDaylightFactor,
         needs=[create_rad_folder, split_grid_folder, create_octree],
         loop=split_grid_folder._outputs.sensor_grids,
-        sub_folder='initial_results/{{item.full_id}}',  # create a subfolder for each grid
+        sub_folder='initial_results/{{item.full_id}}',  # subfolder for each grid
         sub_paths={'grid': '{{item.full_id}}.pts'}  # sensor_grid sub_path
     )
     def daylight_factor_ray_tracing(
@@ -160,12 +160,12 @@ class DaylightFactorEntryPoint(DAG):
         return [
             {
                 'from': MergeFolderData()._outputs.output_folder,
-                'to': 'results/daylight-factor'
+                'to': 'results'
             }
         ]
 
     results = Outputs.folder(
-        source='results/daylight-factor', description='Folder with raw result files '
+        source='results', description='Folder with raw result files '
         '(.res) that contain daylight factor values for each sensor.',
         alias=daylight_factor_results
     )
