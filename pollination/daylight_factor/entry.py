@@ -84,7 +84,7 @@ class DaylightFactorEntryPoint(DAG):
             },
             {
                 'from': CreateRadianceFolderGrid()._outputs.model_sensor_grids_file,
-                'to': 'results/grids_info.json'
+                'to': 'results/daylight-factor/grids_info.json'
             },
             {
                 'from': CreateRadianceFolderGrid()._outputs.sensor_grids,
@@ -160,12 +160,12 @@ class DaylightFactorEntryPoint(DAG):
         return [
             {
                 'from': MergeFolderData()._outputs.output_folder,
-                'to': 'results'
+                'to': 'results/daylight-factor'
             }
         ]
 
     results = Outputs.folder(
-        source='results', description='Folder with raw result files '
+        source='results/daylight-factor', description='Folder with raw result files '
         '(.res) that contain daylight factor values for each sensor.',
         alias=daylight_factor_results
     )
