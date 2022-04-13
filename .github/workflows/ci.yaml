@@ -98,6 +98,12 @@ jobs:
         run: |
           pip install pollination-daylight-factor
           pip install -r requirements.txt
+      - name: Get Job Context
+        id: get-context
+        run: |
+          TAG=$(git describe --tags | sed 's/v//')
+          echo "Releasing tag: ${TAG:?}"
+          echo "::set-output name=tag::$TAG"
       - name: deploy to production
         run: |
           queenbee
