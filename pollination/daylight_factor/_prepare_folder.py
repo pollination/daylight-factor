@@ -71,7 +71,7 @@ class DaylightFactorPrepareFolder(GroupedDAG):
             {
                 # TODO: keep these files outside sub-folders
                 'from': CreateRadianceFolderGrid()._outputs.sensor_grids_file,
-                'to': 'results/grids_info.json'
+                'to': 'results/daylight-factor/grids_info.json'
             }
         ]
 
