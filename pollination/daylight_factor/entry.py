@@ -1,6 +1,5 @@
 from pollination_dsl.dag import Inputs, DAG, task, Outputs
 from dataclasses import dataclass
-from pollination.honeybee_radiance.grid import MergeFolderData
 from pollination.honeybee_radiance.raytrace import RayTracingDaylightFactor
 
 # input/output alias
@@ -12,6 +11,7 @@ from pollination.alias.outputs.daylight import daylight_factor_results
 
 
 from ._prepare_folder import DaylightFactorPrepareFolder
+from ._postprocess_results import DaylightFactorPostProcessResults
 
 
 @dataclass
@@ -63,7 +63,7 @@ class DaylightFactorEntryPoint(DAG):
     def prepare_daylight_factor_folder(
             self, cpu_count=cpu_count, min_sensor_count=min_sensor_count,
             grid_filter=grid_filter, model=model
-        ):
+    ):
         return [
             {
                 'from': DaylightFactorPrepareFolder()._outputs.model_folder,
@@ -72,10 +72,6 @@ class DaylightFactorEntryPoint(DAG):
             {
                 'from': DaylightFactorPrepareFolder()._outputs.resources,
                 'to': 'resources'
-            },
-            {
-                'from': DaylightFactorPrepareFolder()._outputs.results,
-                'to': 'results'
             },
             {
                 'from': DaylightFactorPrepareFolder()._outputs.initial_results,
@@ -112,14 +108,17 @@ class DaylightFactorEntryPoint(DAG):
         ]
 
     @task(
-        template=MergeFolderData,
+        template=DaylightFactorPostProcessResults,
         needs=[daylight_factor_ray_tracing]
     )
-    def restructure_results(self, input_folder='initial_results', extension='res'):
+    def post_process_results(
+            self, results_folder='initial_results',
+            grids_info='resources/grids_info.json'
+    ):
         return [
             {
-                'from': MergeFolderData()._outputs.output_folder,
-                'to': 'results/daylight-factor'
+                'from': DaylightFactorPostProcessResults()._outputs.results,
+                'to': 'results'
             }
         ]
 
