@@ -1,7 +1,7 @@
 from pollination_dsl.dag import Inputs, GroupedDAG, task, Outputs
 from dataclasses import dataclass
 
-from pollination.path.copy import Copy
+from pollination.path.copy import CopyFile
 
 from pollination.honeybee_radiance.grid import MergeFolderData
 
@@ -27,11 +27,11 @@ class DaylightFactorPostProcessResults(GroupedDAG):
             }
         ]
 
-    @task(template=Copy, needs=[restructure_results])
+    @task(template=CopyFile, needs=[restructure_results])
     def copy_grid_info(self, src=grids_info):
         return [
             {
-                'from': Copy()._outputs.dst,
+                'from': CopyFile()._outputs.dst,
                 'to': 'results/daylight-factor/grids_info.json'
             }
         ]
