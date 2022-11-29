@@ -23,7 +23,7 @@ class DaylightFactorPostProcessResults(GroupedDAG):
         return [
             {
                 'from': MergeFolderData()._outputs.output_folder,
-                'to': 'results/daylight-factor'
+                'to': 'results'
             }
         ]
 
@@ -32,7 +32,7 @@ class DaylightFactorPostProcessResults(GroupedDAG):
         return [
             {
                 'from': CopyFile()._outputs.dst,
-                'to': 'results/daylight-factor/grids_info.json'
+                'to': 'results/grids_info.json'
             }
         ]
 
