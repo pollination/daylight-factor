@@ -123,7 +123,7 @@ class DaylightFactorEntryPoint(DAG):
         ]
 
     results = Outputs.folder(
-        source='results/daylight-factor', description='Folder with raw result files '
+        source='results', description='Folder with raw result files '
         '(.res) that contain daylight factor values for each sensor.',
         alias=daylight_factor_results
     )
