@@ -20,7 +20,8 @@ class DaylightFactorEntryPoint(DAG):
 
     # inputs
     model = Inputs.file(
-        description='A Honeybee model in HBJSON file format.',
+        description='A Honeybee Model in either JSON or Pkl format. This can also '
+        'be a zipped honeybee-radiance folder.',
         extensions=['json', 'hbjson', 'pkl', 'hbpkl', 'zip'],
         alias=hbjson_model_grid_input
     )
