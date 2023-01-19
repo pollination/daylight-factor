@@ -132,8 +132,17 @@ class DaylightFactorEntryPoint(DAG):
             {
                 'from': DaylightFactorPostProcessResults()._outputs.grid_summary,
                 'to': 'grid_summary.csv'
+            },
+            {
+                'from': DaylightFactorPostProcessResults()._outputs.visualization,
+                'to': 'visualization.vsf'
             }
         ]
+
+    visualization = Outputs.file(
+        source='visualization.vsf',
+        description='Result visualization in VisualizationSet format.'
+    )
 
     results = Outputs.folder(
         source='results', description='Folder with raw result files '
