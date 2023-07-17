@@ -7,6 +7,7 @@ from pollination.alias.inputs.model import hbjson_model_grid_input
 from pollination.alias.inputs.radiancepar import rad_par_daylight_factor_input
 from pollination.alias.inputs.grid import grid_filter_input, \
     min_sensor_count_input, cpu_count
+from pollination.alias.inputs.postprocess import grid_metrics_input
 from pollination.alias.outputs.daylight import daylight_factor_results
 
 
@@ -58,6 +59,11 @@ class DaylightFactorEntryPoint(DAG):
         'first_floor_. By default, all grids in the model will be simulated.',
         default='*',
         alias=grid_filter_input
+    )
+
+    grid_metrics = Inputs.file(
+        description='A JSON file with additional custom metrics to calculate.',
+        extensions=['json'], optional=True, alias=grid_metrics_input
     )
 
     @task(template=DaylightFactorPrepareFolder)
@@ -113,13 +119,18 @@ class DaylightFactorEntryPoint(DAG):
         needs=[daylight_factor_ray_tracing]
     )
     def post_process_results(
-            self, results_folder='initial_results',
-            grids_info='resources/grids_info.json'
+        self, results_folder='initial_results',
+        grids_info='resources/grids_info.json',
+        model=model, grid_metrics=grid_metrics
     ):
         return [
             {
                 'from': DaylightFactorPostProcessResults()._outputs.results,
                 'to': 'results'
+            },
+            {
+                'from': DaylightFactorPostProcessResults()._outputs.grid_summary,
+                'to': 'grid_summary.csv'
             }
         ]
 
@@ -127,4 +138,8 @@ class DaylightFactorEntryPoint(DAG):
         source='results', description='Folder with raw result files '
         '(.res) that contain daylight factor values for each sensor.',
         alias=daylight_factor_results
+    )
+
+    grid_summary = Outputs.file(
+        source='grid_summary.csv', description='grid summary.'
     )
