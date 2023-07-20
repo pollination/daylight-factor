@@ -8,7 +8,8 @@ from pollination.alias.inputs.radiancepar import rad_par_daylight_factor_input
 from pollination.alias.inputs.grid import grid_filter_input, \
     min_sensor_count_input, cpu_count
 from pollination.alias.inputs.postprocess import grid_metrics_input
-from pollination.alias.outputs.daylight import daylight_factor_results
+from pollination.alias.outputs.daylight import daylight_factor_results, \
+    grid_metrics_results
 
 
 from ._prepare_folder import DaylightFactorPrepareFolder
@@ -141,5 +142,6 @@ class DaylightFactorEntryPoint(DAG):
     )
 
     grid_summary = Outputs.file(
-        source='grid_summary.csv', description='grid summary.'
+        source='grid_summary.csv', description='Grid summary of metrics.',
+        alias=grid_metrics_results
     )
